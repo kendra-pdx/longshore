@@ -1,0 +1,32 @@
+// primatives
+char = _{ ASCII_ALPHANUMERIC | "-" | "_" | "." | "`" | "(" | ")" }
+text = _{ !(NEWLINE) ~ ANY  }
+eol = _{ NEWLINE | EOI }
+ws = _{ " " | "\t" }
+ident = { char+ }
+value = { char ~ text+ }
+
+// package
+tag = @{ "#" ~ ident }
+tags = _{ ws? ~ tag }
+title = { crate_name ~ (tags)* ~ eol? }
+
+// description
+description = @{ text+ ~ eol }
+
+// properties
+key = @{ ident }
+property = { key ~ ":" ~ ws? ~ value ~ eol }
+
+// feature flags
+ls = _{ ws? ~ ","? ~ ws? }
+empty_flags = _{ "[" ~ "]" ~ eol }
+flag = { (char | "/" | ":" | "?" )+ }
+flags = { "[" ~ (flag ~ ls?)* ~ "]" ~ eol }
+crate_name = @{ ident }
+feature = {  (ws | "+")+ ~ crate_name ~ ws* ~ "=" ~ ws* ~ (empty_flags | flags) ~ eol? }
+features = { "features:" ~ NEWLINE ~ feature* }
+
+note = @{ "note: " ~ value ~ eol? }
+
+info =  { SOI ~ title ~ (note | features | property | description )* ~ EOI }

@@ -1,0 +1,35 @@
+[async]
+tokio = []
+tokio-stream = []
+futures = []
+
+[error]
+anyhow = []
+thiserror = []
+
+[configuration]
+clap = []
+config = []
+
+[data]
+uuid = ["serde", "v4"]
+chrono = ["serde"]
+url = []
+
+[derivations]
+derive_more = ["full"]
+strum = []
+derive-new = []
+
+[observability]
+tracing = []
+tracing-subscriber = ["env-filter"]
+tracing-loki = []
+
+[serialization]
+serde = ["derive"]
+serde_json = []
+
+[utilities]
+itertools = []
+frunk = []
