@@ -1,5 +1,5 @@
 [package]
-name = "cargo-workspace-builder"
+name = "longshore"
 version.workspace = true
 authors.workspace = true
 edition.workspace = true

@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "cargo-workspace-builder",
+  "productName": "longshore",
   "version": "0.1.0",
-  "identifier": "com.cargo-workspace-builder.app",
+  "identifier": "com.longshore.app",
   "build": {
     "beforeDevCommand": "deno task dev",
     "devUrl": "http://localhost:1420",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "cargo-workspace-builder",
+        "title": "Longshore",
         "width": 800,
         "height": 600
       }

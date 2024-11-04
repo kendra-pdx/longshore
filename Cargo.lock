@@ -249,27 +249,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "cargo-workspace-builder"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "derive-new",
- "derive_more 1.0.0",
- "from-pest",
- "pest",
- "pest-ast",
- "pest_derive",
- "serde",
- "serde_json",
- "strum",
- "tauri",
- "tauri-build",
- "tauri-plugin-shell",
- "tokio",
- "toml 0.8.2",
-]
-
-[[package]]
 name = "cargo_metadata"
 version = "0.18.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1691,6 +1670,27 @@ name = "log"
 version = "0.4.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a7a70ba024b9dc04c27ea2f0c0548feb474ec5c54bba33a7f72f873a39d07b24"
+
+[[package]]
+name = "longshore"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "derive-new",
+ "derive_more 1.0.0",
+ "from-pest",
+ "pest",
+ "pest-ast",
+ "pest_derive",
+ "serde",
+ "serde_json",
+ "strum",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-shell",
+ "tokio",
+ "toml 0.8.2",
+]
 
 [[package]]
 name = "mac"
