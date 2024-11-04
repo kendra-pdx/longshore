@@ -4,8 +4,8 @@ use anyhow::anyhow;
 use packages::{lookup_packages, BasicCategories};
 use tauri::{App, Manager};
 
-mod packages;
 mod cargo_info;
+mod packages;
 
 type BoxError = Box<dyn Error + Send + Sync>;
 
@@ -13,8 +13,11 @@ type BoxError = Box<dyn Error + Send + Sync>;
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
-        .invoke_handler(tauri::generate_handler![packages::lookup_packages])
         .setup(setup)
+        .invoke_handler(tauri::generate_handler![
+            packages::lookup_packages,
+            packages::get_categories
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
@@ -22,6 +25,7 @@ pub fn run() {
 fn setup(app: &mut App) -> Result<(), Box<dyn Error>> {
     tauri::async_runtime::block_on(async {
         let packages: BasicCategories = toml::from_str(include_str!("crates.toml"))?;
+        app.manage(packages.clone());
 
         let packages = lookup_packages(packages).await.map_err(|e| anyhow!(e))?;
         app.manage(packages);
@@ -30,13 +34,3 @@ fn setup(app: &mut App) -> Result<(), Box<dyn Error>> {
     })
 }
 
-macro_rules! map {
-    ($($k:expr => $v:expr),*) => ({
-        let mut map = std::collections::BTreeMap::new();
-        $(
-            map.insert($k, $v);
-        )*
-        map
-    });
-}
-use map;

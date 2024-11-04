@@ -1,8 +1,9 @@
 use std::collections::BTreeMap;
 
 use anyhow::anyhow;
-use derive_more::derive::{Deref, Display};
+use derive_more::derive::{Deref, Display, From, Into};
 use serde::{Deserialize, Serialize};
+use tauri::State;
 
 use crate::{cargo_info::CargoInfo, BoxError};
 
@@ -16,6 +17,8 @@ pub struct CategoryName(#[new(into)] String);
     Deserialize,
     Deref,
     Display,
+    From,
+    Into,
     Clone,
     PartialEq,
     Eq,
@@ -33,29 +36,38 @@ pub struct Feature(#[new(into)] String);
 #[derive(Debug, derive_new::new, Serialize, Deserialize)]
 pub struct PackageDetails {
     #[new(into)]
+    pub name: PackageName,
+    #[new(into)]
     pub version: String,
     #[new(default)]
     pub features: BTreeMap<Feature, bool>,
 }
 
-pub type _BasicCategories = BTreeMap<CategoryName, BTreeMap<PackageName, Vec<Feature>>>;
-pub type _FullCategories = BTreeMap<CategoryName, BTreeMap<PackageName, PackageDetails>>;
-
 #[derive(Debug, Clone, Serialize, Deserialize, derive_new::new, Deref)]
-pub struct BasicCategories(#[new(default)] pub BTreeMap<CategoryName, BTreeMap<PackageName, Vec<Feature>>>);
+pub struct BasicCategories(
+    #[new(default)] pub BTreeMap<CategoryName, BTreeMap<PackageName, Vec<Feature>>>,
+);
 
 #[derive(Debug, Serialize, Deserialize, derive_new::new, Deref)]
-pub struct FullCategories(#[new(default)] BTreeMap<CategoryName, BTreeMap<PackageName, PackageDetails>>);
+pub struct FullCategories(
+    #[new(default)] BTreeMap<CategoryName, Vec<PackageDetails>>,
+);
 
+#[tauri::command]
+pub fn get_categories(categories: State<BasicCategories>) -> BasicCategories {
+    (*categories).clone()
+}
 
 #[tauri::command]
 pub async fn lookup_packages(categories: BasicCategories) -> Result<FullCategories, String> {
     let mut full = FullCategories::new();
     for (category, packages) in &categories.0 {
-        let mut cat_pkgs = BTreeMap::new();
+        let mut cat_pkgs = Vec::new();
         for (package_name, enabled_features) in packages {
-            let pkg = lookup_package(&package_name, &enabled_features).await.map_err(|e| e.to_string())?;
-            cat_pkgs.insert(package_name.clone(), pkg);
+            let pkg = lookup_package(&package_name, &enabled_features)
+                .await
+                .map_err(|e| e.to_string())?;
+            cat_pkgs.push(pkg);
         }
         full.0.insert(category.clone(), cat_pkgs);
     }
@@ -72,7 +84,7 @@ async fn lookup_package(
         "crate {} must have a version. none found.",
         package_name
     ))?;
-    let mut pkg_details = PackageDetails::new(version);
+    let mut pkg_details = PackageDetails::new(package_name.clone(), version);
     for feature in info.features.unwrap_or_default().features {
         let enabled = enabled.iter().any(|f| **f == *feature.crate_name);
         pkg_details
@@ -85,7 +97,6 @@ async fn lookup_package(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::map;
 
     #[tokio::test]
     async fn usage() {
@@ -119,4 +130,16 @@ mod tests {
         let categories: BasicCategories = toml::from_str(&toml).unwrap();
         println!("{categories:?}");
     }
+
+    macro_rules! map {
+        ($($k:expr => $v:expr),*) => ({
+            let mut map = std::collections::BTreeMap::new();
+            $(
+                map.insert($k, $v);
+            )*
+            map
+        });
+    }
+    use map;
+
 }

@@ -7,6 +7,7 @@
     "npm:@tauri-apps/plugin-shell@2": "2.0.1",
     "npm:@types/lodash@^4.17.13": "4.17.13",
     "npm:@vitejs/plugin-vue@^5.0.5": "5.1.4_vite@5.4.10_vue@3.5.12__typescript@5.6.3_typescript@5.6.3",
+    "npm:@vueuse/core@^11.2.0": "11.2.0_vue@3.5.12__typescript@5.6.3_typescript@5.6.3",
     "npm:autoprefixer@^10.4.20": "10.4.20_postcss@8.4.47",
     "npm:lodash@^4.17.21": "4.17.21",
     "npm:pinia@^2.2.5": "2.2.5_typescript@5.6.3_vue@3.5.12__typescript@5.6.3",
@@ -312,6 +313,9 @@
     "@types/lodash@4.17.13": {
       "integrity": "sha512-lfx+dftrEZcdBPczf9d0Qv0x+j/rfNCMuC6OcfXmO8gkfeNAY88PgKUbvG56whcN23gc27yenwF6oJZXGFpYxg=="
     },
+    "@types/web-bluetooth@0.0.20": {
+      "integrity": "sha512-g9gZnnXVq7gM7v3tJCWV/qw7w+KeOlSHAhgF9RytFyifW6AF61hdT2ucrYhPq9hLs5JIryeupHV3qGk95dH9ow=="
+    },
     "@vitejs/plugin-vue@5.1.4_vite@5.4.10_vue@3.5.12__typescript@5.6.3_typescript@5.6.3": {
       "integrity": "sha512-N2XSI2n3sQqp5w7Y/AN/L2XDjBIRGqXko+eDp42sydYSBeJuSm5a1sLf8zakmo8u7tA8NmBgoDLA1HeOESjp9A==",
       "dependencies": [
@@ -430,6 +434,24 @@
     },
     "@vue/shared@3.5.12": {
       "integrity": "sha512-L2RPSAwUFbgZH20etwrXyVyCBu9OxRSi8T/38QsvnkJyvq2LufW2lDCOzm7t/U9C1mkhJGWYfCuFBCmIuNivrg=="
+    },
+    "@vueuse/core@11.2.0_vue@3.5.12__typescript@5.6.3_typescript@5.6.3": {
+      "integrity": "sha512-JIUwRcOqOWzcdu1dGlfW04kaJhW3EXnnjJJfLTtddJanymTL7lF1C0+dVVZ/siLfc73mWn+cGP1PE1PKPruRSA==",
+      "dependencies": [
+        "@types/web-bluetooth",
+        "@vueuse/metadata",
+        "@vueuse/shared",
+        "vue-demi"
+      ]
+    },
+    "@vueuse/metadata@11.2.0": {
+      "integrity": "sha512-L0ZmtRmNx+ZW95DmrgD6vn484gSpVeRbgpWevFKXwqqQxW9hnSi2Ppuh2BzMjnbv4aJRiIw8tQatXT9uOB23dQ=="
+    },
+    "@vueuse/shared@11.2.0_vue@3.5.12__typescript@5.6.3_typescript@5.6.3": {
+      "integrity": "sha512-VxFjie0EanOudYSgMErxXfq6fo8vhr5ICI+BuE3I9FnX7ePllEsVrRQ7O6Q1TLgApeLuPKcHQxAXpP+KnlrJsg==",
+      "dependencies": [
+        "vue-demi"
+      ]
     },
     "alien-signals@0.2.0": {
       "integrity": "sha512-StlonZhBBrsPPwrDjiPAiVTf/rolxffLxVPT60Qv/t88BZ81BvUVzHgGqEFvJ1ii8HXtm1+zU2Icr59tfWEcag=="
@@ -1150,6 +1172,7 @@
         "npm:@tauri-apps/plugin-shell@2",
         "npm:@types/lodash@^4.17.13",
         "npm:@vitejs/plugin-vue@^5.0.5",
+        "npm:@vueuse/core@^11.2.0",
         "npm:autoprefixer@^10.4.20",
         "npm:lodash@^4.17.21",
         "npm:pinia@^2.2.5",
