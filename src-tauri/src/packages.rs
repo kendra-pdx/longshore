@@ -38,6 +38,8 @@ pub struct PackageDetails {
     #[new(into)]
     pub name: PackageName,
     #[new(into)]
+    pub category: CategoryName,
+    #[new(into)]
     pub version: String,
     #[new(default)]
     pub features: BTreeMap<Feature, bool>,
@@ -49,9 +51,7 @@ pub struct BasicCategories(
 );
 
 #[derive(Debug, Serialize, Deserialize, derive_new::new, Deref)]
-pub struct FullCategories(
-    #[new(default)] BTreeMap<CategoryName, Vec<PackageDetails>>,
-);
+pub struct FullCategories(#[new(default)] Vec<PackageDetails>);
 
 #[tauri::command]
 pub fn get_categories(categories: State<BasicCategories>) -> BasicCategories {
@@ -62,21 +62,19 @@ pub fn get_categories(categories: State<BasicCategories>) -> BasicCategories {
 pub async fn lookup_packages(categories: BasicCategories) -> Result<FullCategories, String> {
     let mut full = FullCategories::new();
     for (category, packages) in &categories.0 {
-        let mut cat_pkgs = Vec::new();
         for (package_name, enabled_features) in packages {
-            let pkg = lookup_package(&package_name, &enabled_features)
+            let pkg = lookup_package(&package_name, &category, &enabled_features)
                 .await
                 .map_err(|e| e.to_string())?;
-            cat_pkgs.push(pkg);
+            full.0.push(pkg);
         }
-        full.0.insert(category.clone(), cat_pkgs);
     }
-
     Ok(full)
 }
 
 async fn lookup_package(
     package_name: &PackageName,
+    category: &CategoryName,
     enabled: &[Feature],
 ) -> Result<PackageDetails, BoxError> {
     let info = CargoInfo::for_crate(&package_name).await?;
@@ -84,7 +82,7 @@ async fn lookup_package(
         "crate {} must have a version. none found.",
         package_name
     ))?;
-    let mut pkg_details = PackageDetails::new(package_name.clone(), version);
+    let mut pkg_details = PackageDetails::new(package_name.clone(), category.clone(), version);
     for feature in info.features.unwrap_or_default().features {
         let enabled = enabled.iter().any(|f| **f == *feature.crate_name);
         pkg_details
@@ -141,5 +139,4 @@ mod tests {
         });
     }
     use map;
-
 }
